@@ -1,0 +1,10 @@
+{
+    "emeraldwalk.runonsave": {
+        "commands": [
+               {
+                   "match": "\\.php$",
+                   "cmd": "docker exec -w /var/www laravel-practice-workspace-1 /var/www/vendor/bin/php-cs-fixer fix app"
+               }
+        ]
+    }
+}
