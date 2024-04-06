@@ -5,6 +5,13 @@ RUN docker-php-ext-install sockets \
         pdo_mysql \
         mysqli
 
+# Install xdebug
+RUN apk update \
+    && apk add --no-cache $PHPIZE_DEPS \
+    && pecl channel-update pecl.php.net \
+    && pecl install xdebug-3.0.4 \
+    && docker-php-ext-enable xdebug
+
 FROM composer:2 AS composer
 
 FROM builder AS workspace
