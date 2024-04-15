@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Foundation\Http\FormRequest; //FormRequest是Laravel提供的用來處理請求的類別
 use Illuminate\Contracts\Validation\Validator;
-use Illuminate\Validation\ValidationException;
+use Illuminate\Validation\ValidationException; //ValidationException是Laravel提供的用來處理驗證失敗的例外
 
 class APIRequest extends FormRequest
 {
