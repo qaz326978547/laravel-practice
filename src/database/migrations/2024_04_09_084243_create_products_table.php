@@ -16,9 +16,7 @@ class CreateProductsTable extends Migration
         Schema::create('products', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title'); //標題
-            $table->string('category'); //分類
-            $table->string('image'); //單張封面圖片
-            $table->string('images')->nullable(); //多張內容圖片
+            $table->integer('category_id')->nullable(); //分類id 可為空
             $table->string('description'); //描述
             $table->string('content')->nullable(); //商品規格
             $table->decimal('origin_price'); //原價

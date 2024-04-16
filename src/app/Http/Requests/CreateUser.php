@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class CreateUser extends APIRequest
+class CreateUser extends APIRequest //引用APIRequest
 {
     /**
      * Determine if the user is authorized to make this request.

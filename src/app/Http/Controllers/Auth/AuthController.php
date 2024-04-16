@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateUser;
 use App\User;
 use Illuminate\Support\Facades\Auth; //驗證
 use Symfony\Component\HttpFoundation\Response; //使用於狀態碼
-use Illuminate\Support\Facades\Validator;
+use App\Http\Controllers\Controller;
 
 class AuthController extends Controller
 {
