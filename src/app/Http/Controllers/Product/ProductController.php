@@ -14,13 +14,13 @@ use App\Models\Product\Image;
 class ProductController extends Controller
 {
     /**
-     * GET /products 取得所有產品
+     * GET /products 取得所有產品並透過with()方法取得關聯資料
      *
      * @return \Illuminate\Http\Response
      */
     public function index(): JsonResponse
     {
-        $products = Product::with('category')->get();
+        $products = Product::with(['category', 'images'])->get();
         $products = $products->map(function ($product) {
             return [
                 'id' => $product->id,
@@ -33,9 +33,11 @@ class ProductController extends Controller
                 'quantity' => $product->quantity,
                 'is_enabled' => $product->is_enabled,
                 'unit' => $product->unit,
+                'image' => $product->images->where('type', 'main')->first()->imageUrl ?? null,
+                'images' => $product->images->where('type', 'sub')->pluck('imageUrl') ?? []
+                //pluck()方法取得集合中所有指定的key
             ];
         });
-
         return response()->json([
             'data' => $products
         ], Response::HTTP_OK);
@@ -48,7 +50,7 @@ class ProductController extends Controller
      */
     public function show($id): JsonResponse
     {
-        $product = Product::with('category')->find($id);
+        $product = Product::with(['category', 'images'])->find($id);
         if (!$product) {
             return response()->json([
                 'message' => '找不到產品'
@@ -65,13 +67,15 @@ class ProductController extends Controller
             'quantity' => $product->quantity,
             'is_enabled' => $product->is_enabled,
             'unit' => $product->unit,
+            'image' => $product->images()->where('type', 'main')->first()->imageUrl,
+            'images' => $product->images()->where('type', 'sub')->pluck('imageUrl')
         ];
         return response()->json([
             'data' => $product
         ], Response::HTTP_OK);
     }
     /**
-     * POST /products 新增產品
+     * POST /products 新增產品 並新增product_images中介表資料
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
@@ -79,15 +83,8 @@ class ProductController extends Controller
     public function store(ProductRequest $request): JsonResponse
     {
         $data = $request->validated();
-        Product::create($data);
-        //找出Image裡面product_id是null的資料
-        $images = Image::whereNull('product_id')->get();
-        //將product_id是null的資料全部更新成最新的product_id
-        $images->each(function ($image) { //each()對集合中的每個項目執行回調 如果使用map()就需要返回後再使用save()更新
-            $image->update([
-                'product_id' => Product::latest()->first()->id //latest()取得最新一筆資料 first()取得第一筆資料
-            ]);
-        });
+        $product = Product::create($data);
+        $product->images()->attach($data['images']); //attach()方法新增多對多關聯 並在中介表products_images中新增資料
         return response()->json([
             'data' => $data,
             'message' => '新增成功'
@@ -134,6 +131,7 @@ class ProductController extends Controller
                 'message' => '找不到產品'
             ], Response::HTTP_NOT_FOUND);
         }
+        $product->images()->detach(); //detach()方法刪除中介表products_images中的資料
         $product->delete();
         return response()->json([
             'message' => '刪除成功'

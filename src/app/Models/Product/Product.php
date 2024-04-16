@@ -19,7 +19,7 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'category_id', 'description', 'origin_price', 'price', 'quantity', 'is_enabled', 'unit','content'
+        'title', 'category_id', 'description', 'origin_price', 'price', 'quantity', 'is_enabled', 'unit', 'content'
     ];
     /**
      * 隱藏不必要的欄位
@@ -35,5 +35,13 @@ class Product extends Model
     public function category()
     {
         return $this->belongsTo(Category::class); //products表的category_id欄位對應到products_category表的id欄位
+    }
+    /**
+     * 關聯圖片 (多對多) 一個商品可以有多張圖片 (images表)
+     */
+    public function images()
+    {
+        return $this->belongsToMany(Image::class, 'products_images', 'product_id', 'image_id');
+        //product_id 欄位對應到 products 表的 id 欄位，image_id 欄位對應到 images 表的 id 欄位。
     }
 }

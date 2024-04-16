@@ -11,7 +11,7 @@ class Category extends Model
      *
      * @var array
      */
-    protected $table = 'products_category'; //指定資料表名稱
+    protected $table = 'products_categories'; //指定資料表名稱
     /**
      * 白名單
      *

@@ -33,6 +33,8 @@ class ProductRequest extends APIRequest
             'quantity' => ['required', 'integer', 'min:1', 'max:1000'],
             'is_enabled' => ['required', 'integer'],
             'unit' => ['required', 'string'],
+            'images' => ['nullable', 'array'],
+            'images.*' => ['integer'],
         ];
     }
 

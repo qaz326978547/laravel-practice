@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateProductsCategoryTable extends Migration
+class CreateImagesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,9 +13,10 @@ class CreateProductsCategoryTable extends Migration
      */
     public function up()
     {
-        Schema::create('products_categories', function (Blueprint $table) {
+        Schema::create('images', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->comment('類別名稱');
+            $table->enum('type', ['main', 'sub'])->comment('圖片類型'); // main:主要圖片 sub:次要圖片
+            $table->string('imageUrl')->comment('圖片路徑');
             $table->timestamps();
         });
     }
@@ -27,6 +28,6 @@ class CreateProductsCategoryTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products_category');
+        Schema::dropIfExists('images');
     }
 }
