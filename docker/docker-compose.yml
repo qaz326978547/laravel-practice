@@ -21,6 +21,7 @@ services:
       - ./php/config/php.ini:/usr/local/etc/php/php.ini:ro
       - ./php/config/php-fpm.conf:/usr/local/etc/php-fpm.conf:ro
       - ./php/config/pools:/usr/local/etc/php-fpm.d:ro
+      - ./php/conf.d/xdebug.ini:/usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
   workspace:
     build:
       context: ./php
