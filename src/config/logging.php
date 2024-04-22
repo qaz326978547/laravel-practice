@@ -44,6 +44,13 @@ return [
             'level' => 'debug',
         ],
 
+        'sale_status' => [
+            'driver' => 'single', // 單一檔案
+            'path' => storage_path('logs/sale_status.log'),
+            'level' => 'debug', // 記錄所有等級的日誌
+            'days' => 7, // 保留7天
+        ],
+
         'daily' => [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
