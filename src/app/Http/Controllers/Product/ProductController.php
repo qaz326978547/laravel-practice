@@ -10,9 +10,17 @@ use Symfony\Component\HttpFoundation\Response; //使用於狀態碼
 use App\Http\Requests\ProductRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Product\Image;
+use App\Repositories\ProductsRepositoryInterface;
 
 class ProductController extends Controller
 {
+    private $product_repo;
+
+    public function __construct(ProductsRepositoryInterface $product_repo)
+    {
+        $this->product_repo = $product_repo;
+    }
+
     /**
      * GET /products 取得所有產品並透過with()方法取得關聯資料
      *
@@ -136,5 +144,11 @@ class ProductController extends Controller
         return response()->json([
             'message' => '刪除成功'
         ], Response::HTTP_OK);
+    }
+
+    public function data(): JsonResponse
+    {
+        $products = $this->product_repo->findAll();
+        return response()->json($products);
     }
 }
