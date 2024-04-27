@@ -34,4 +34,6 @@ Route::prefix('v2')->group(function () {
         Route::apiResource('/products/category', 'Product\CategoryController')->only(['store', 'update', 'destroy']); //store update, destroy
         Route::apiResource('/products/image', 'Product\ImageController')->only(['store', 'update', 'destroy']); //store update, destroy
     });
+    Route::get('/test-products/sql-data', 'Product\ProductController@data');
+    Route::get('/test-products/json-data', 'Product\JsonProductController@data');
 });

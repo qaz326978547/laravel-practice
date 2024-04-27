@@ -2,6 +2,11 @@
 
 namespace App\Providers;
 
+use App\Http\Controllers\Product\JsonProductController;
+use App\Http\Controllers\Product\ProductController;
+use App\Repositories\EloquentProductsRepository;
+use App\Repositories\JsonProductsRepository;
+use App\Repositories\ProductsRepositoryInterface;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -23,6 +28,12 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
+        $this->app->when(ProductController::class)
+          ->needs(ProductsRepositoryInterface::class)
+          ->give(EloquentProductsRepository::class);
+
+        $this->app->when(JsonProductController::class)
+          ->needs(ProductsRepositoryInterface::class)
+          ->give(JsonProductsRepository::class);
     }
 }

@@ -1,0 +1,6 @@
+{
+    "data": [
+        { "id": 1, "name": "BMW", "price": "100" },
+        { "id": 2, "name": "BMW2", "price": "200" }
+    ]
+}
