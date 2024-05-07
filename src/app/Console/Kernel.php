@@ -27,7 +27,7 @@ class Kernel extends ConsoleKernel
     {
         // $schedule->command('inspire')
         //          ->hourly();
-        $schedule->command('product:update-sale-status')->everyThirtyMinutes();
+        $schedule->command('product:update-sale-status')->everyMinute(); //每分鐘執行一次
     }
     /**
      * Register the commands for the application.

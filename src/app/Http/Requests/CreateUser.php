@@ -27,7 +27,7 @@ class CreateUser extends APIRequest //引用APIRequest
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6|confirmed',
-            'is_admin' => 'boolean'
+            'is_admin' => 'boolean',
         ];
     }
 
@@ -41,7 +41,7 @@ class CreateUser extends APIRequest //引用APIRequest
             'password.required' => '請輸入密碼',
             'password.min' => '密碼至少6個字元',
             'password.confirmed' => '密碼不一致',
-            'is_admin.boolean' => '權限格式錯誤'
+            'is_admin.boolean' => '權限格式錯誤',
         ];
     }
 }

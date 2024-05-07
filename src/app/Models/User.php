@@ -1,6 +1,6 @@
 <?php
 
-namespace App;
+namespace App\Models;
 
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -38,5 +38,10 @@ class User extends Authenticatable
     public function isAdmin($query)
     {
         return $query->where('is_admin', 1);
+    }
+
+    public function emailVerification()
+    {
+        return $this->hasOne(EmailVerifications::class);
     }
 }

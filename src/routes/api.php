@@ -21,9 +21,16 @@ use App\Http\Controllers\Auth\AuthController;
 
 Route::prefix('v2')->group(function () {
     //登入、註冊 
+    // Route::get('register', 'Auth\RegisterController@showRegistrationForm')->name('register');
+    // Route::post('register', 'Auth\RegisterController@register');
     Route::prefix('auth')->group(function () {
         Route::post('signup', 'Auth\AuthController@signup');
         Route::post('login', 'Auth\AuthController@login')->name('login');
+        Route::post('logout', 'Auth\AuthController@logout')->middleware('auth:api'); //middleware('auth:api') 驗證使用者是否登入
+        Route::middleware('auth:api')->prefix('email')->group(function () {
+            Route::post('/send-verification-email', 'Auth\EmailVerificationController@sendVerificationCode');
+            Route::post('/verify-verification-code', 'Auth\EmailVerificationController@verifyVerificationCode');
+        });
     });
     Route::get('/on-sale', 'Product\OnSaleController@index'); //取得特定時間特價商品
     Route::apiResource('/products', 'Product\ProductController')->only(['index', 'show']); //取得所有產品資料及單一產品資料 不需身份驗證
