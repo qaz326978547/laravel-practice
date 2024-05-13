@@ -46,3 +46,7 @@ services:
     volumes:
       - ${DB_DATA_HOST_PATH}:/var/lib/mysql
       - ./data/mysql:/docker-entrypoint-initdb.d
+  redis:
+    image: redis:6.2.5
+    ports:
+      - "6379:6379"
