@@ -34,8 +34,10 @@ class ProductController extends Controller
                 'is_enabled' => $product->is_enabled,
                 'unit' => $product->unit,
                 'image' => $product->images->where('type', 'main')->first()->imageUrl ?? null,
-                'images' => $product->images->where('type', 'sub')->pluck('imageUrl') ?? []
+                'images' => $product->images->where('type', 'sub')->pluck('imageUrl') ?? [],
                 //pluck()方法取得集合中所有指定的key
+                'on_sale_start' => $product->on_sale_start,
+                'on_sale_end' => $product->on_sale_end,
             ];
         });
         return response()->json([
@@ -68,7 +70,9 @@ class ProductController extends Controller
             'is_enabled' => $product->is_enabled,
             'unit' => $product->unit,
             'image' => $product->images()->where('type', 'main')->first()->imageUrl,
-            'images' => $product->images()->where('type', 'sub')->pluck('imageUrl')
+            'images' => $product->images()->where('type', 'sub')->pluck('imageUrl'),
+            'on_sale_start' => $product->on_sale_start,
+            'on_sale_end' => $product->on_sale_end,
         ];
         return response()->json([
             'data' => $product

@@ -4,10 +4,14 @@ namespace App\Http\Controllers\Auth;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\CreateUser;
-use App\User;
+use App\Models\User;
 use Illuminate\Support\Facades\Auth; //驗證
 use Symfony\Component\HttpFoundation\Response; //使用於狀態碼
 use App\Http\Controllers\Controller;
+use App\Models\EmailVerifications;
+use App\Notifications\VerificationCode;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Mail\Message;
 
 class AuthController extends Controller
 {
@@ -18,20 +22,18 @@ class AuthController extends Controller
      * @return \Illuminate\Http\Response
      */
 
+
     public function signup(CreateUser $request): \Illuminate\Http\JsonResponse
     {
         $form = $request->validated();
-
         $user = new User([
             'name' => $form['name'],
             'email' => $form['email'],
             'password' => bcrypt($form['password'])
-
         ]);
         if (isset($form['is_admin'])) {
             $user->is_admin = $form['is_admin'];
         }
-
         $user->save();
         return response()->json([
             'data' => $form,
@@ -63,11 +65,19 @@ class AuthController extends Controller
         ], Response::HTTP_OK); //200為成功的狀態碼
     }
 
-    public function scopeAdmin()
+    public function scopeAdmin() //取得所有管理員
     {
         $admin = User::where('is_admin', 1)->get();
         return response()->json([
             'data' => $admin
+        ], Response::HTTP_OK);
+    }
+
+    public function logout(Request $request): \Illuminate\Http\JsonResponse
+    {
+        $request->user()->token()->revoke(); //撤銷token
+        return response()->json([
+            'message' => '登出成功'
         ], Response::HTTP_OK);
     }
 }

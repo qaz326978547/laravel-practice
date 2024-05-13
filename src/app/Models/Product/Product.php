@@ -19,7 +19,7 @@ class Product extends Model
      * @var array
      */
     protected $fillable = [
-        'title', 'category_id', 'description', 'origin_price', 'price', 'quantity', 'is_enabled', 'unit', 'content'
+        'title', 'category_id', 'description', 'origin_price', 'price', 'quantity', 'is_enabled', 'unit', 'content', 'on_sale_start', 'on_sale_end', 'is_on_sale'
     ];
     /**
      * 隱藏不必要的欄位
