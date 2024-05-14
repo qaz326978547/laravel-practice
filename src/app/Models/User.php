@@ -40,7 +40,7 @@ class User extends Authenticatable
         return $query->where('is_admin', 1);
     }
 
-    public function emailVerification()
+    public function emailVerification() //取得EmailVerifications的資料
     {
         return $this->hasOne(EmailVerifications::class);
     }

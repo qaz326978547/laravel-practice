@@ -15,3 +15,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/verification-success',function(){
+    return view('emails.verification-success');
+});
+
+Route::get('/verification-failed',function(){
+    return view('emails.verification-failed');
+});
+

@@ -48,7 +48,6 @@ class UpdateOnSaleRequest extends APIRequest
             'on_sale_start.required' => '請輸入特價開始時間',
             'on_sale_start.date' => '特價開始時間必須為日期格式',
             'on_sale_start.before_or_equal' => '特價開始時間不能超過一個月',
-            // 'on_sale_start.after' => '特價開始時間必須在現在時間之後',
             'on_sale_end.required' => '請輸入特價結束時間',
             'on_sale_end.date' => '特價結束時間必須為日期格式',
             'on_sale_end.after' => '特價結束時間必須在特價開始時間之後',

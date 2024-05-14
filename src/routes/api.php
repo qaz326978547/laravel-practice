@@ -27,9 +27,10 @@ Route::prefix('v2')->group(function () {
         Route::post('signup', 'Auth\AuthController@signup');
         Route::post('login', 'Auth\AuthController@login')->name('login');
         Route::post('logout', 'Auth\AuthController@logout')->middleware('auth:api'); //middleware('auth:api') 驗證使用者是否登入
-        Route::middleware('auth:api')->prefix('email')->group(function () {
+        Route::prefix('email')->group(function () {
             Route::post('/send-verification-email', 'Auth\EmailVerificationController@sendVerificationCode');
             Route::post('/verify-verification-code', 'Auth\EmailVerificationController@verifyVerificationCode');
+            Route::post('/resend-verification-email', 'Auth\EmailVerificationController@reSendVerificationEmail');
         });
     });
     Route::get('/on-sale', 'Product\OnSaleController@index'); //取得特定時間特價商品
