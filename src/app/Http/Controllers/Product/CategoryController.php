@@ -4,42 +4,53 @@ namespace App\Http\Controllers\Product;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Models\Product\Category;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-
+use App\Repositories\CategoryRepositoryInterface;
 class CategoryController extends Controller
 {
+    protected $categoryRepository;
+
+    public function __construct(CategoryRepositoryInterface $categoryRepository)
+    {
+        $this->categoryRepository = $categoryRepository;
+    }
     /**
      * GET /category 取得所有產品分類
      *
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse;
      */
     public function index(): JsonResponse
     {
+        $categories = $this->categoryRepository->getAll();
         return response()->json([
-            'data' => Category::all()
+            'data' => $categories
         ], Response::HTTP_OK);
     }
     /**
      * GET /category/{id} 取得單一產品分類
      *
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse;
      */
     public function show($id)
     {
-        $data = Category::find($id);
+        $category = $this->categoryRepository->getById($id);
+        if (!$category) {
+            return response()->json([
+                'message' => '找不到產品分類'
+            ], Response::HTTP_NOT_FOUND);
+        }
         return response()->json([
-            'data' => $data
+            'data' => $category
         ], Response::HTTP_OK);
     }
     /**
      * POST /category 新增產品分類
      *
      * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse;
      */
     public function store(Request $request)
     {
@@ -56,7 +67,7 @@ class CategoryController extends Controller
                 'error' => $validator->errors()
             ], Response::HTTP_BAD_REQUEST);
         }
-        Category::create($data);
+        $this->categoryRepository->create($data);
         return response()->json([
             'data' => $data,
             'message' => '新增成功'
@@ -67,9 +78,9 @@ class CategoryController extends Controller
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\JsonResponse;
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, $id) : JsonResponse
     {
         $data = $request->all();
         $message = [
@@ -84,13 +95,13 @@ class CategoryController extends Controller
                 'error' => $validator->errors()
             ], Response::HTTP_BAD_REQUEST);
         }
-        $category = Category::find($id);
+        $category = $this->categoryRepository->getById($id);
         if (!$category) {
             return response()->json([
                 'message' => '找不到產品分類'
             ], Response::HTTP_NOT_FOUND);
         }
-        $category->update($data);
+        $this->categoryRepository->update($id, $data);
         return response()->json([
             'data' => $data,
             'message' => '更新成功'
@@ -104,13 +115,13 @@ class CategoryController extends Controller
      */
     public function destroy($id)
     {
-        $category = Category::find($id);
+        $category = $this->categoryRepository->getById($id);
         if (!$category) {
             return response()->json([
                 'message' => '找不到產品分類'
             ], Response::HTTP_NOT_FOUND);
         }
-        $category->delete();
+        $this->categoryRepository->delete($id);
         return response()->json([
             'message' => '刪除成功'
         ], Response::HTTP_OK);

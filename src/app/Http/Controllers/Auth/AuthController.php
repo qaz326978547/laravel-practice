@@ -9,10 +9,9 @@ use Illuminate\Support\Facades\Auth; //驗證
 use Symfony\Component\HttpFoundation\Response; //使用於狀態碼
 use App\Http\Controllers\Controller;
 use App\Models\EmailVerifications;
-use App\Notifications\VerificationCode;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Mail\Message;
-
+use App\Mail\VerificationCodeMailable;
+use Illuminate\Support\Facades\Hash;
 class AuthController extends Controller
 {
     /**
@@ -29,15 +28,23 @@ class AuthController extends Controller
         $user = new User([
             'name' => $form['name'],
             'email' => $form['email'],
-            'password' => bcrypt($form['password'])
+            'password' => Hash::make($form['password'])
         ]);
         if (isset($form['is_admin'])) {
             $user->is_admin = $form['is_admin'];
         }
         $user->save();
+
+        $userId = $user->id;
+        $email = $form['email'];
+        $emailVerification = new EmailVerifications();
+        $code = random_int(100000, 999999); //產生驗證碼
+        $emailVerification->sendVerificationCode($email, $code,$userId); //寄送驗證碼
+        $userName = $form['name'];
+        Mail::to($email)->queue(new VerificationCodeMailable($code, $userName, $userId, $email));
         return response()->json([
             'data' => $form,
-            'message' => '註冊成功'
+            'message' => '已註冊成功，請至信箱收取驗證信件'
         ], Response::HTTP_CREATED); //201為新增成功的狀態碼
     }
 

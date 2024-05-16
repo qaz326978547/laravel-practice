@@ -6,6 +6,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Models\EmailVerifications;
 
 class VerificationCodeMailable extends Mailable
 {
@@ -13,6 +14,8 @@ class VerificationCodeMailable extends Mailable
 
     public $code;
     public $name;
+    public $userId;
+    public $email;
 
     /**
      * The number of times the job may be attempted.
@@ -26,10 +29,13 @@ class VerificationCodeMailable extends Mailable
      *
      * @return void
      */
-    public function __construct($code, $name)
+    public function __construct($code, $name, $userId, $email)
     {
         $this->code = $code;
         $this->name = $name;
+        $this->userId = $userId;
+        $this->email = $email;
+
     }
 
     /**
@@ -42,6 +48,8 @@ class VerificationCodeMailable extends Mailable
         // 故意引入一個錯誤
         // $this->nonexistentMethod();
         return $this->subject('Vogue傢俱信箱驗證')
-            ->view('emails.verification', ['code' => $this->code, 'name' => $this->name]);
+            ->view('emails.verification', 
+            ['code' => $this->code, 'name' => $this->name, 'userId' => $this->userId,'email'=>$this->email]
+            );
     }
 }

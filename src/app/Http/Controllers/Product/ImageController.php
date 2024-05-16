@@ -7,87 +7,95 @@ use App\Http\Controllers\Controller;
 use App\Models\Product\Image;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
-
+use App\Repositories\ImageRepositoryInterface;
+use App\Http\Requests\ImageRequest;
+use Illuminate\Http\JsonResponse;
 class ImageController extends Controller
 {
-    //
-    public function index()
+    protected $imageRepository;
+    
+    public function __construct(ImageRepositoryInterface $imageRepositoryInterface)
+    {
+        $this->imageRepository = $imageRepositoryInterface;
+    }
+    /**
+     * Display a listing of the resource.
+     *
+     * @return JsonResponse
+     */
+    public function index() : JsonResponse
     {
         return response()->json([
-            'data' => Image::all()
+            'data' => $this->imageRepository->getAll()
         ]);
     }
-    public function show($id)
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function show($id) : JsonResponse
     {
-        $data = Image::find($id);
+        $data = $this->imageRepository->getById($id);
+        if (!$data) {
+            return response()->json([
+                'message' => '找不到圖片'
+            ], Response::HTTP_NOT_FOUND);
+        }
         return response()->json([
             'data' => $data
         ]);
     }
-    public function store(Request $request)
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  ImageRequest  $request
+     * @return JsonResponse
+     */
+    public function store(ImageRequest $request) : JsonResponse
     {
-        $data = $request->all();
-        $message = [
-            'type.required' => '請輸入類型',
-            'type.in' => '類型只能填入main或sub',
-            'imageUrl.required' => '請輸入圖片網址',
-            'imageUrl.string' => '圖片網址必須為字串',
-        ];
-        $validator = Validator::make($data, [
-            'type' => 'required|in:main,sub', //type只能填入main或sub
-            'imageUrl' => 'required|string',
-        ], $message);
-        if ($validator->fails()) {
-            return response()->json([
-                'error' => $validator->errors()
-            ]);
-        }
-        Image::create($data);
-        //在data中加入id
-        $data['id'] = Image::all()->last()->id;
+        $data = $request->validated();
+        $image = $this->imageRepository->create($data);
         return response()->json([
             'data' => [
-                'id' => $data['id'],
-                'type' => $data['type'],
-                'imageUrl' => $data['imageUrl']
+                'id' => $image->id,
+                'type' => $image->type,
+                'imageUrl' => $image->imageUrl
             ],
             'message' => '新增成功'
         ], Response::HTTP_CREATED);
     }
-    public function update(Request $request, $id)
+    public function update(ImageRequest $request, $id)
     {
-        $data = $request->all();
-        $message = [
-            'type.required' => '請輸入類型',
-            'type.in' => '類型只能填入main或sub',
-            'imagerUrl.required' => '請輸入圖片網址',
-            'imagerUrl.string' => '圖片網址必須為字串',
-        ];
-        $validator = Validator::make($data, [
-            'type' => 'required|in:main,sub', //type只能填入main或sub
-            'imagerUrl' => 'required|string',
-        ], $message);
-        if ($validator->fails()) {
-            return response()->json([
-                'error' => $validator->errors()
-            ]);
-        }
-        $image = Image::find($id);
-        $image->update($data);
-        return response()->json([
-            'data' => $data,
-            'message' => '更新成功'
-        ], Response::HTTP_OK);
-    }
-    public function destroy($id)
-    {
-        $image = Image::find($id);
+        $data = $request->validated();
+        $image = $this->imageRepository->getById($id);
         if (!$image) {
             return response()->json([
                 'message' => '找不到圖片'
             ], Response::HTTP_NOT_FOUND);
         }
-        $image->delete();
+        $this->imageRepository->update($id, $data);
+        return response()->json([
+            'data' => $data,
+            'message' => '更新成功'
+        ], Response::HTTP_OK);
+    }
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return JsonResponse
+     */
+    public function destroy($id)
+    {
+        $image = $this->imageRepository->getById($id);
+        if (!$image) {
+            return response()->json([
+                'message' => '找不到圖片'
+            ], Response::HTTP_NOT_FOUND);
+        }
+        $this->imageRepository->delete($id);
         return response()->json([
             'message' => '刪除成功'
         ], Response::HTTP_OK);

@@ -24,7 +24,6 @@ class CreateProductsTable extends Migration
             $table->integer('quantity'); //數量
             $table->integer('is_enabled'); //是否上架
             $table->string('unit'); //單位
-            //on_sale
             $table->timestamp('on_sale_start')->nullable(); //優惠開始時間
             $table->timestamp('on_sale_end')->nullable(); //優惠結束時間     
             $table->boolean('is_on_sale')->default(0); //是否優惠
