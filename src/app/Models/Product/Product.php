@@ -44,4 +44,9 @@ class Product extends Model
         return $this->belongsToMany(Image::class, 'products_images', 'product_id', 'image_id');
         //product_id 欄位對應到 products 表的 id 欄位，image_id 欄位對應到 images 表的 id 欄位。
     }
+
+    public function getOnSale()
+    {
+        return $this->where('is_on_sale', 1);
+    }
 }
