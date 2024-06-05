@@ -47,6 +47,8 @@ class ProductRequest extends APIRequest
             'quantity.required' => '請輸入數量',
             'is_enabled.required' => '請輸入是否上架',
             'unit.required' => '請輸入單位',
+            'images.array' => '圖片格式錯誤',
+            'images.*.integer' => '圖片格式錯誤',
         ];
     }
 }
