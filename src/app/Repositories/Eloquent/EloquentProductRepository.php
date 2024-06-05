@@ -1,11 +1,12 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Eloquent;
 
 use App\Models\Product\Product;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
 
 class EloquentProductRepository implements ProductRepositoryInterface
 {

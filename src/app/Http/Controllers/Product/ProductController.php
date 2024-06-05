@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Product;
 
-use App\Repositories\ProductRepositoryInterface;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use App\Http\Requests\ProductRequest;
