@@ -10,7 +10,8 @@ use App\Models\EmailVerifications;
 
 class VerificationCodeMailable extends Mailable
 {
-    use Queueable, SerializesModels;
+    use Queueable;
+    use SerializesModels;
 
     public $code;
     public $name;
@@ -35,7 +36,6 @@ class VerificationCodeMailable extends Mailable
         $this->name = $name;
         $this->userId = $userId;
         $this->email = $email;
-
     }
 
     /**
@@ -48,8 +48,9 @@ class VerificationCodeMailable extends Mailable
         // 故意引入一個錯誤
         // $this->nonexistentMethod();
         return $this->subject('Vogue傢俱信箱驗證')
-            ->view('emails.verification', 
-            ['code' => $this->code, 'name' => $this->name, 'userId' => $this->userId,'email'=>$this->email]
+            ->view(
+                'emails.verification',
+                ['code' => $this->code, 'name' => $this->name, 'userId' => $this->userId,'email'=>$this->email]
             );
     }
 }

@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Laravel\Passport\HasApiTokens; //API驗證 <<<新增這行
+use App\Models\Cart\Cart;
 
 class User extends Authenticatable
 {
@@ -43,5 +44,9 @@ class User extends Authenticatable
     public function emailVerification() //取得EmailVerifications的資料
     {
         return $this->hasOne(EmailVerifications::class);
+    }
+    public function cart() //取得Cart的資料
+    {
+        return $this->hasOne(Cart::class);
     }
 }

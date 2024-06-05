@@ -12,6 +12,7 @@ use App\Models\EmailVerifications;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationCodeMailable;
 use Illuminate\Support\Facades\Hash;
+
 class AuthController extends Controller
 {
     /**
@@ -39,7 +40,7 @@ class AuthController extends Controller
         $email = $form['email'];
         $emailVerification = new EmailVerifications();
         $code = random_int(100000, 999999); //產生驗證碼
-        $emailVerification->sendVerificationCode($email, $code,$userId); //寄送驗證碼
+        $emailVerification->sendVerificationCode($email, $code, $userId); //寄送驗證碼
         $userName = $form['name'];
         Mail::to($email)->queue(new VerificationCodeMailable($code, $userName, $userId, $email));
         return response()->json([

@@ -7,7 +7,8 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
-use App\Repositories\CategoryRepositoryInterface;
+use App\Repositories\Interfaces\CategoryRepositoryInterface;
+
 class CategoryController extends Controller
 {
     protected $categoryRepository;
@@ -80,7 +81,7 @@ class CategoryController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\JsonResponse;
      */
-    public function update(Request $request, $id) : JsonResponse
+    public function update(Request $request, $id): JsonResponse
     {
         $data = $request->all();
         $message = [

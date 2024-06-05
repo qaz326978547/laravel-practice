@@ -7,13 +7,14 @@ use App\Http\Controllers\Controller;
 use App\Models\Product\Image;
 use Illuminate\Support\Facades\Validator;
 use Symfony\Component\HttpFoundation\Response;
-use App\Repositories\ImageRepositoryInterface;
+use App\Repositories\Interfaces\ImageRepositoryInterface;
 use App\Http\Requests\ImageRequest;
 use Illuminate\Http\JsonResponse;
+
 class ImageController extends Controller
 {
     protected $imageRepository;
-    
+
     public function __construct(ImageRepositoryInterface $imageRepositoryInterface)
     {
         $this->imageRepository = $imageRepositoryInterface;
@@ -23,7 +24,7 @@ class ImageController extends Controller
      *
      * @return JsonResponse
      */
-    public function index() : JsonResponse
+    public function index(): JsonResponse
     {
         return response()->json([
             'data' => $this->imageRepository->getAll()
@@ -35,7 +36,7 @@ class ImageController extends Controller
      * @param  int  $id
      * @return JsonResponse
      */
-    public function show($id) : JsonResponse
+    public function show($id): JsonResponse
     {
         $data = $this->imageRepository->getById($id);
         if (!$data) {
@@ -53,7 +54,7 @@ class ImageController extends Controller
      * @param  ImageRequest  $request
      * @return JsonResponse
      */
-    public function store(ImageRequest $request) : JsonResponse
+    public function store(ImageRequest $request): JsonResponse
     {
         $data = $request->validated();
         $image = $this->imageRepository->create($data);

@@ -1,13 +1,13 @@
 <?php
 
-namespace App\Repositories;
+namespace App\Repositories\Eloquent;
 
 use App\Models\Product\Product;
 use Illuminate\Support\Collection;
+use App\Repositories\Interfaces\ProductRepositoryInterface;
 
 class EloquentProductRepository implements ProductRepositoryInterface
 {
-
     public function getAll(): Collection
     {
         $products = Product::with(['category', 'images'])->get();
@@ -33,7 +33,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
         });
     }
 
-    public function getById(int $id) : ?array
+    public function getById(int $id): ?array
     {
         $product = Product::with(['category', 'images'])->find($id);
 
@@ -60,17 +60,17 @@ class EloquentProductRepository implements ProductRepositoryInterface
         return null;
     }
 
-    public function create(array $data) : Product
+    public function create(array $data): Product
     {
         $product = Product::create($data);
         $product->images()->attach($data['images']);
         return $product;
     }
 
-    public function update(int $id, array $data) : Product
+    public function update(int $id, array $data): Product
     {
         $product = Product::find($id);
-        if(!$product){
+        if (!$product) {
             throw new \Exception('Product not found');
         }
 
@@ -78,7 +78,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
         return $product;
     }
 
-    public function delete(int $id) : ?Product
+    public function delete(int $id): ?Product
     {
         $product = Product::find($id);
         if ($product) {

@@ -44,4 +44,8 @@ Route::prefix('v2')->group(function () {
         Route::apiResource('/products/category', 'Product\CategoryController')->only(['store', 'update', 'destroy']); //store update, destroy
         Route::apiResource('/products/image', 'Product\ImageController')->only(['store', 'update', 'destroy']); //store update, destroy
     });
+    Route::middleware('auth:api')->group(function () {
+        Route::apiResource('/cart', 'Cart\CartController')->only(['index']);
+        Route::apiResource('/cart-item', 'Cart\CartItemController')->only(['store', 'update', 'destroy']);
+    });
 });

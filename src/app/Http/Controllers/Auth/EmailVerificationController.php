@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\VerificationCodeMailable;
 use Symfony\Component\HttpFoundation\Response;
 use App\Models\User;
+
 class EmailVerificationController extends Controller
 {
     /**
@@ -23,10 +24,10 @@ class EmailVerificationController extends Controller
             'email' => 'required|email'
         ]);
         $email = $request->query('email'); // 從請求中獲取電子郵件地址
-    
+
         // 找到對應的使用者
         $user = User::where('email', $email)->first();
-    
+
         if (!$user) {
             return response()->json([
                 'message' => '電子郵件地址不正確'
@@ -42,7 +43,7 @@ class EmailVerificationController extends Controller
         $code = random_int(100000, 999999); //產生驗證碼
         $emailVerification->sendVerificationCode($email, $code, $user->id); //寄送驗證碼
         Mail::to($email)->queue(new VerificationCodeMailable($code, $user->name, $user->id, $email));
-    
+
         return response()->json([
             'message' => '驗證郵件已重新寄送'
         ], Response::HTTP_OK); // 200為請求成功的狀態碼
@@ -52,7 +53,7 @@ class EmailVerificationController extends Controller
      * POST /verify-verification-code 驗證驗證碼
      *
      * @param  \Illuminate\Http\Request  $request
-     * 
+     *
      */
     public function verifyVerificationCode(Request $request)
     {
@@ -68,7 +69,7 @@ class EmailVerificationController extends Controller
             $token = $user->createToken('Token', ['admin'])->accessToken; //建立token
             return response()->json([
                 'token' => $token, //回傳token
-            ], Response::HTTP_OK); //200為成功的狀態碼      
+            ], Response::HTTP_OK); //200為成功的狀態碼
         } else {
             return response()->json([
                 'message' => '驗證碼錯誤'

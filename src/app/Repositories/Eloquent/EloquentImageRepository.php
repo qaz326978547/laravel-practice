@@ -1,8 +1,10 @@
 <?php
-namespace App\Repositories;
+
+namespace App\Repositories\Eloquent;
 
 use App\Models\Product\Image;
 use Illuminate\Support\Collection;
+use App\Repositories\Interfaces\ImageRepositoryInterface;
 
 class EloquentImageRepository implements ImageRepositoryInterface
 {
@@ -11,7 +13,7 @@ class EloquentImageRepository implements ImageRepositoryInterface
         return Image::all();
     }
 
-    public function getById(int $id): ?Image 
+    public function getById(int $id): ?Image
     {
         return Image::find($id);
     }

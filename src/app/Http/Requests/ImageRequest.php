@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Http\Requests\APIRequest;
+
 class ImageRequest extends APIRequest
 {
     /**
@@ -31,10 +32,9 @@ class ImageRequest extends APIRequest
     public function messages()
     {
         return [
-            'type.required' => '請輸入類型',
-            'type.in' => '類型只能填入main或sub',
-            'imageUrl.required' => '請輸入圖片網址',
-            'imageUrl.string' => '圖片網址必須為字串',
+            'quantity.required' => '請輸入數量',
+            'quantity.integer' => '數量必須為整數',
+            'quantity.min' => '數量最小為 1',
         ];
     }
 }

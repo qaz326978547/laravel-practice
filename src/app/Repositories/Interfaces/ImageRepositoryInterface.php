@@ -1,5 +1,6 @@
 <?php
-namespace App\Repositories;
+
+namespace App\Repositories\Interfaces;
 
 use Illuminate\Support\Collection;
 use App\Models\Product\Image;
