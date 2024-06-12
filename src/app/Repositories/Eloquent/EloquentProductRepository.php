@@ -107,7 +107,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
         if (!$product) {
             throw new \Exception('Product not found', Response::HTTP_NOT_FOUND);
         }
-        $product->update($data);
+        $product->is_on_sale = $data['is_on_sale'];
 
         return $this->formatProduct($product);
     }
