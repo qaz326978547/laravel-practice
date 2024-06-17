@@ -38,7 +38,7 @@ Route::prefix('v2')->group(function () {
     Route::apiResource('/image', 'Product\ImageController')->only(['index', 'show']); //取得所有產品圖片資料及單一產品圖片資料    
     //新增、修改、刪除產品資料 需要身份驗證
     Route::middleware(['auth:api', 'scopes:admin'])->prefix('admin')->group(function () {
-        Route::put('/products/on-sale', 'Product\ProductController@updateOnSale');
+        Route::put('/products/on-sale', 'Product\ProductController@updateOnSaleTime');
         Route::apiResource('/products', 'Product\ProductController')->only(['store', 'update', 'destroy']); //store update, destroy
         Route::apiResource('/products/category', 'Product\CategoryController')->only(['store', 'update', 'destroy']); //store update, destroy
         Route::apiResource('/products/image', 'Product\ImageController')->only(['store', 'update', 'destroy']); //store update, destroy

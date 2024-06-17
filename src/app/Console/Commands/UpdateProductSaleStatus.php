@@ -3,10 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use App\Models\Product\Product;
 use Illuminate\Support\Facades\Log;
 use App\Repositories\Eloquent\EloquentProductRepository;
-use App\Repositories\Interfaces\ProductRepositoryInterface;
+use Carbon\Carbon;
 
 class UpdateProductSaleStatus extends Command
 {
@@ -26,10 +25,9 @@ class UpdateProductSaleStatus extends Command
 
     protected $productRepository;
 
-    public function __construct(ProductRepositoryInterface $productRepository)
+    public function __construct()
     {
         parent::__construct();
-        $this->productRepository = $productRepository;
     }
 
 
@@ -38,19 +36,24 @@ class UpdateProductSaleStatus extends Command
      *
      * @return mixed
      */
-    public function handle()
+    public function handle(EloquentProductRepository $productRepository)
     {
-        $products = $this->productRepository->getAll();
+        $products = $productRepository->getAll();
 
         foreach ($products as $product) {
-            if (now()->greaterThan($product['on_sale_end'])) {
-                $this->productRepository->update($product['id'], ['is_on_sale' => 0]);
-                $this->info('Product ' . $product['id'] . '已經結束特賣.');
-            } elseif (now()->greaterThanOrEqualTo($product['on_sale_start'])) {
-                $this->productRepository->update($product['id'], ['is_on_sale' => 1]);
-                $this->info('Product ' . $product['id'] . '已經開始特賣.');
+            $now = now();
+            $onSaleStart = Carbon::parse($product['on_sale_start']);
+            $onSaleEnd = Carbon::parse($product['on_sale_end']);
+
+            //如果當前時間小於特賣結束時間，且大於特賣開始時間，則特賣開始
+            if ($now->greaterThanOrEqualTo($onSaleStart) && $now->lessThan($onSaleEnd)) {
+                $productRepository->updateOnSaleStatus($product['id'], 1);
+            // $this->info('Product ' . $product['id'] . '已經開始特賣.');
+            } else {
+                $productRepository->updateOnSaleStatus($product['id'], 0);
+                // $this->info('Product ' . $product['id'] . '已經結束特賣.');
             }
-            Log::channel('sale_status')->info('限時特賣商品狀態' . $product['id'] . '特賣狀態' . $product['is_on_sale'] . '開始特賣' . $product['on_sale_start'] . '結束特賣' . $product['on_sale_end']);
+            Log::channel('sale_status')->info('限時特賣商品狀態' . $product['id'] . '特賣狀態' . $product['is_on_sale'] . '開始特賣' . $onSaleStart . '結束特賣' . $onSaleEnd);
         }
     }
 }

@@ -39,6 +39,9 @@ class EloquentProductRepository implements ProductRepositoryInterface
     {
         return Cache::remember('products', 60, function () {
             $products = $this->product_model->with(['category', 'images'])->get();
+            if (!$products) {
+                throw new \Exception('Product not found', Response::HTTP_NOT_FOUND);
+            }
             return $products->map(function ($product) {
                 return $this->formatProduct($product);
             });
@@ -74,6 +77,8 @@ class EloquentProductRepository implements ProductRepositoryInterface
             //如果同時存在陣列中和當前商品的圖片中，則保留，否則刪除
             //若已存在陣列中的id但不存在於當前商品的圖片中，則新增
         }
+        Cache::forget('products');
+
         return $this->formatProduct($product->load('images'));
     }
 
@@ -86,6 +91,7 @@ class EloquentProductRepository implements ProductRepositoryInterface
             $product->images()->detach();
             $product->delete();
         }
+        Cache::forget('products');
 
         return $product;
     }
@@ -101,14 +107,37 @@ class EloquentProductRepository implements ProductRepositoryInterface
         });
     }
 
-    public function updateOnSale(int $id, array $data): array
+    public function updateOnSaleTime(int $id, array $data): array
     {
         $product = $this->product_model->find($id);
         if (!$product) {
             throw new \Exception('Product not found', Response::HTTP_NOT_FOUND);
         }
-        $product->is_on_sale = $data['is_on_sale'];
+        $product->on_sale_start = $data['on_sale_start'];
+        $product->on_sale_end = $data['on_sale_end'];
+        $product->save();
+        Cache::forget('products');
 
         return $this->formatProduct($product);
+    }
+    public function updateOnSaleStatus(int $id, int $is_on_sale): ?array
+    {
+        $product = $this->product_model->find($id);
+        if (!$product) {
+            throw new \Exception('Product not found', Response::HTTP_NOT_FOUND);
+        }
+        $product->is_on_sale = $is_on_sale;
+        $product->save();
+        Cache::forget('products');
+
+        return $this->formatProduct($product);
+    }
+
+    public function getAllEnabled(): Collection
+    {
+        $products = $this->product_model->where('is_enabled', 1)->get();
+        return $products->map(function ($product) {
+            return $this->formatProduct($product);
+        });
     }
 }

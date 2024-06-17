@@ -27,9 +27,8 @@ class UpdateOnSaleRequest extends APIRequest
     {
         return [
             'product_id' => 'required|integer',
-            'is_on_sale' => 'required|boolean',
-            'on_sale_start' => ['required', 'date', 'before_or_equal:' . Carbon::now()->addMonth(1)->toDateTimeString(), new MinuteMustBeMultipleOf30()],
-            'on_sale_end' => ['required', 'date', 'after:' . Carbon::now()->toDateTimeString(), 'before_or_equal:' . Carbon::now()->addMonth(1)->toDateTimeString(), new MinuteMustBeMultipleOf30()],
+            'on_sale_start' => ['required', 'date', 'before_or_equal:' . Carbon::now()->addMonth(1)->toDateTimeString()],
+            'on_sale_end' => ['required', 'date', 'after:' . Carbon::now()->toDateTimeString(), 'before_or_equal:' . Carbon::now()->addMonth(1)->toDateTimeString()],
         ];
     }
 
@@ -43,8 +42,6 @@ class UpdateOnSaleRequest extends APIRequest
         return [
             'product_id.required' => '請輸入產品ID',
             'product_id.integer' => '產品ID必須為整數',
-            'is_on_sale.required' => '請輸入是否特價',
-            'is_on_sale.boolean' => '是否特價必須為布林值',
             'on_sale_start.required' => '請輸入特價開始時間',
             'on_sale_start.date' => '特價開始時間必須為日期格式',
             'on_sale_start.before_or_equal' => '特價開始時間不能超過一個月',

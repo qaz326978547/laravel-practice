@@ -3,14 +3,16 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use App\Repositories\Interfaces\ProductRepositoryInterface;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
+use App\Console\Commands\UpdateProductSaleStatus;
+use App\Repositories\Eloquent\EloquentProductRepository;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+
 
 class UpdateProductSaleStatusTest extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
 
     public function getProductData()
     {
@@ -35,29 +37,20 @@ class UpdateProductSaleStatusTest extends TestCase
             ]
         ];
     }
-
     public function testProductSaleStatus()
     {
-        $productRepository = $this->createMock(ProductRepositoryInterface::class);
+        /** $productRepository ProductRepositoryInterface::class; */
+        $productRepository = $this->createMock(EloquentProductRepository::class);
         $productRepository->method('getAll')->willReturn(new Collection($this->getProductData()));
 
         $productRepository->expects($this->exactly(3))
-            ->method('update')
+            ->method('updateOnSaleStatus')
             ->withConsecutive(
-                [$this->equalTo(1), $this->equalTo(['is_on_sale' => 1])],
-
-                [$this->equalTo(2), $this->equalTo(['is_on_sale' => 0])],
-                [$this->equalTo(3), $this->equalTo(['is_on_sale' => 0])]
+                [$this->equalTo(1), $this->equalTo(1)],
+                [$this->equalTo(2), $this->equalTo(0)],
+                [$this->equalTo(3), $this->equalTo(0)]
             );
-
-        $products = $productRepository->getAll();
-
-        foreach ($products as $product) {
-            if (now()->greaterThanOrEqualTo($product['on_sale_start']) && now()->lessThanOrEqualTo($product['on_sale_end'])) {
-                $productRepository->update($product['id'], ['is_on_sale' => 1]);
-            } else {
-                $productRepository->update($product['id'], ['is_on_sale' => 0]);
-            }
-        }
+        $command = new UpdateProductSaleStatus($productRepository);
+        $command->handle($productRepository);
     }
 }
