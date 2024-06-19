@@ -67,6 +67,20 @@ class ImageController extends Controller
             'message' => '新增成功'
         ], Response::HTTP_CREATED);
     }
+    public function storeAWSImage(Request $request): JsonResponse
+    {
+        $data = $request->all();
+        $image = $this->imageRepository->addAWSImage($data['file']);
+
+        $imageUrl = 'https://fcc-laravel.s3.ap-northeast-1.amazonaws.com/' . $image;
+
+        return response()->json([
+            'data' => [
+                'imageUrl' => $imageUrl
+            ],
+            'message' => '新增成功'
+        ], Response::HTTP_CREATED);
+    }
     public function update(ImageRequest $request, $id)
     {
         $data = $request->validated();
