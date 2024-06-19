@@ -1,5 +1,6 @@
 <?php
-namespace App\Repositories;
+
+namespace App\Repositories\Interfaces;
 
 use Illuminate\Support\Collection;
 use App\Models\Product\Image;
@@ -11,4 +12,6 @@ interface ImageRepositoryInterface
     public function create(array $data): Image;
     public function update(int $id, array $data): bool;
     public function delete(int $id): bool;
+
+    public function addAWSImage($file): string;
 }

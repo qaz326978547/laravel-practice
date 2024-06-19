@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Repositories\Interfaces;
+
+use Illuminate\Support\Collection;
+use App\Models\Product\Product;
+
+interface ProductRepositoryInterface
+{
+    public function getAll(): Collection;
+    public function getById(int $id): ?array;
+    public function create(array $data): Product;
+    public function update(int $id, array $data): ?array;
+    public function delete(int $id): ?Product;
+    public function getOnSale(): Collection;
+    public function updateOnSaleTime(int $id, array $data): ?array;
+    public function updateOnSaleStatus(int $id, int $is_on_sale): ?array;
+}

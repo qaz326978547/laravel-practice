@@ -1,0 +1,29 @@
+# 工作流程的名稱，這裡命名為 "CI"
+name: CI
+
+# 定義何時觸發此工作流程，這裡設定為當有 pull request 合併到 main 分支時
+on:
+  pull_request_target:
+    branches:
+      - main
+# 定義工作流程中的工作
+jobs:
+  # 這個工作的名稱為 "build"
+  build:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: src
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: "ramsey/composer-install@v2"
+        with:
+          working-directory: "src"
+
+      - name: PHPUnit Tests
+        run: |
+          ./vendor/bin/phpunit -c phpunit.xml
+        shell: bash
